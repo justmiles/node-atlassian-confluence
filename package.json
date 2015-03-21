@@ -1,0 +1,32 @@
+{
+  "name": "atlassian-confluence",
+  "version": "1.0.0",
+  "author": {
+    "name": "justmiles"
+  },
+  "main": "atlassian-confluence",
+  "homepage": "https://github.com/justmiles/node-atlassian-confluence",
+  "bugs": {
+    "url": "https://github.com/justmiles/node-atlassian-confluence/issues"
+  },
+  "description": "Node.js client library to interact with Atlassian Confluence",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/justmiles/node-atlassian-confluence.git"
+  },
+  "engines": {
+    "node": ">=0.6.x"
+  },
+  "keywords": [
+    "atlassian",
+    "confluence",
+    "atlassian-confluence",
+    "wiki",
+    "atlassian-wiki",
+    "rest",
+    "client"
+  ],
+  "dependencies": {
+    "coffee-script": "^1.9.1"
+  }
+}
