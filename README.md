@@ -1,6 +1,9 @@
 # node-atlassian-confluence
 Node.js client library to interact with Atlassian Confluence
 
+## Requirements
+This module currently only support Confluence 5.5+
+
 ## Installation
 
 If you have the node package manager, npm, installed:
