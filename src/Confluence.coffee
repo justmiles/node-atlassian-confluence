@@ -6,6 +6,7 @@ class Confluence
     @username = ''
     @password = ''
     @host = ''
+    @context = ''
 
   getContent:(params, callback) ->
     @XHR "GET", "/content", params, null, callback
@@ -87,7 +88,7 @@ class Confluence
 
     options =
       host: @host
-      path: "/rest/api#{api}#{params}"
+      path: "#{@context}/rest/api#{api}#{params}"
       method: method
       auth: "#{@username}:#{@password}"
       headers:

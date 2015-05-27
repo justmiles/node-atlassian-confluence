@@ -23,6 +23,7 @@ var confluence = require('atlassian-confluence');
 confluence.username = 'your_username';
 confluence.password = 'your_password';
 confluence.host = 'confluence_host.com';
+confluence.context = '/wiki'; // optional 
 
 confluence.simpleSearch('help', { limit : 3 }, function (res) {
     if (res) {
