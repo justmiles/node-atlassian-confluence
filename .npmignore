@@ -10,3 +10,4 @@ CVS
 npm-debug.log
 env.js
 *.iml
+.idea
