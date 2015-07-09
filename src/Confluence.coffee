@@ -82,7 +82,7 @@ class Confluence
     if params == null
       params = ''
     else
-      params = params.toURL()
+      params = toURL(params)
 
     payloadString = JSON.stringify(payload)
 
@@ -120,8 +120,7 @@ class Confluence
     req.write payloadString
     req.end
 
-Object::toURL = ->
-  obj = this
+toURL = (obj)->
   '?' + Object.keys(obj).map((k) ->
     encodeURIComponent(k) + '=' + encodeURIComponent(obj[k])
   ).join('&')
