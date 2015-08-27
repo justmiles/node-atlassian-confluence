@@ -28,6 +28,9 @@ class Confluence
 
   getContentLabels:(contentId, params, callback) ->
     @XHR "GET", "/content/#{contentId}/label", params, null, callback
+    
+  setContentLabels:(contentId, payload, callback) ->
+    @XHR "POST", "/content/#{contentId}/label", null, payload, callback
 
   getContentChildren:(contentId, params, callback) ->
     @XHR "GET", "/content/#{contentId}/child", params, null, callback
