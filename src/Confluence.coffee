@@ -3,10 +3,10 @@ process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
 
 class Confluence
   constructor: () ->
-    @username = ''
-    @password = ''
-    @host = ''
-    @context = ''
+    @username = process.env.CONFLUENCE_USERNAME or ''
+    @password = process.env.CONFLUENCE_PASSWORD or ''
+    @host =  process.env.CONFLUENCE_HOST or ''
+    @context = process.env.CONFLUENCE_CONTEXT or ''
 
   getContent:(params, callback) ->
     @XHR "GET", "/content", params, null, callback
