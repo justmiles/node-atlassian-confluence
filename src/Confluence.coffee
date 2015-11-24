@@ -1,4 +1,5 @@
-http = require('https')
+http = require  'https'
+async = require  'async'
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
 
 class Confluence
@@ -18,6 +19,10 @@ class Confluence
     @XHR "GET", "/content/#{contentId}", params, null, callback
 
   updateContent:(contentId, payload, callback) ->
+    @XHR "PUT", "/content/#{contentId}", null, payload, callback
+
+  updatesertContent:(search, payload, callback) ->
+    @simpleSearch search
     @XHR "PUT", "/content/#{contentId}", null, payload, callback
 
   deleteContent:(contentId, callback) ->
@@ -107,18 +112,16 @@ class Confluence
 
       res.on 'end', ->
         if res.statusCode != 200
-          console.log "Request failed with status code #{res.statusCode}"
-          return callback false
+          return callback "Request failed with status code #{res.statusCode}"
         else
           try
             jsonResponse = JSON.parse(response)
-            return callback jsonResponse
+            return callback null, jsonResponse
           catch e
-            console.log "Could not parse as JSON response. #{e}"
-            return callback false
+            return callback "Could not parse as JSON response. #{e}"
 
     req.on 'error', (e) ->
-      console.log "HTTPS ERROR: #{e}"
+      return callback "HTTPS ERROR: #{e}"
 
     req.write payloadString
     req.end
