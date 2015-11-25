@@ -1,5 +1,6 @@
 http = require  'https'
 async = require  'async'
+Page = require './lib/Page'
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
 
 class Confluence
@@ -8,6 +9,9 @@ class Confluence
     @password = process.env.CONFLUENCE_PASSWORD or process.env.ATLASSIAN_PASSWORD or ''
     @host =  process.env.CONFLUENCE_HOST or process.env.ATLASSIAN_HOST or ''
     @context = process.env.CONFLUENCE_CONTEXT or ''
+
+  page: (page = {}) ->
+    return new Page(page)
 
   getContent:(params, callback) ->
     @XHR "GET", "/content", params, null, callback
@@ -21,9 +25,28 @@ class Confluence
   updateContent:(contentId, payload, callback) ->
     @XHR "PUT", "/content/#{contentId}", null, payload, callback
 
-  updatesertContent:(search, payload, callback) ->
-    @simpleSearch search
-    @XHR "PUT", "/content/#{contentId}", null, payload, callback
+  upsertPage:(searchCQL, payload, callback) ->
+    confluence = @
+    page = new Page payload
+    @advancedSearch searchCQL, {expand: 'version'}, (err, res) ->
+      return callback err, res if err
+      if res.results[0]?
+        console.log res.results[0].id
+        page.id = res.results[0].id
+        page.version = res.results[0].version
+        page.version.number = res.results[0].version.number + 1
+        confluence.updateContent page.id, page, (err, res) ->
+          console.log err if err
+
+          return callback err, res
+        return callback()
+      else
+        #create the thing
+        console.log payload.title
+        confluence.createContent null, payload, (err, res) ->
+          return callback err, res
+
+      #@XHR "PUT", "/content", null, payload, callback
 
   deleteContent:(contentId, callback) ->
     @XHR "DELETE", "/content/#{contentId}", null, null, callback
@@ -112,13 +135,14 @@ class Confluence
 
       res.on 'end', ->
         if res.statusCode != 200
-          return callback "Request failed with status code #{res.statusCode}"
+          return callback "Request failed with status code #{res.statusCode}. --  #{options.method} https://#{options.host}#{options.path}", response
         else
+          console.log response
           try
             jsonResponse = JSON.parse(response)
-            return callback null, jsonResponse
           catch e
-            return callback "Could not parse as JSON response. #{e}"
+            return callback "Could not parse as JSON response. #{e}. --  #{options.method} https://#{options.host}#{options.path}"
+          return callback null, jsonResponse
 
     req.on 'error', (e) ->
       return callback "HTTPS ERROR: #{e}"
