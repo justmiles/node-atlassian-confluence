@@ -7,7 +7,7 @@ class Page
     @body.storage = p.body?.storage or {}
     @version = p.version or {}
     @title = p.title or "New p"
-    @type = p.type or 'p'
+    @type = p.type or 'page'
     @space = p.space or {}
     @space.key = p.space?.key if p.space?.key
     @body = p.body or {}

@@ -31,22 +31,14 @@ class Confluence
     @advancedSearch searchCQL, {expand: 'version'}, (err, res) ->
       return callback err, res if err
       if res.results[0]?
-        console.log res.results[0].id
         page.id = res.results[0].id
         page.version = res.results[0].version
         page.version.number = res.results[0].version.number + 1
         confluence.updateContent page.id, page, (err, res) ->
-          console.log err if err
-
           return callback err, res
-        return callback()
       else
-        #create the thing
-        console.log payload.title
         confluence.createContent null, payload, (err, res) ->
           return callback err, res
-
-      #@XHR "PUT", "/content", null, payload, callback
 
   deleteContent:(contentId, callback) ->
     @XHR "DELETE", "/content/#{contentId}", null, null, callback
@@ -137,7 +129,6 @@ class Confluence
         if res.statusCode != 200
           return callback "Request failed with status code #{res.statusCode}. --  #{options.method} https://#{options.host}#{options.path}", response
         else
-          console.log response
           try
             jsonResponse = JSON.parse(response)
           catch e
