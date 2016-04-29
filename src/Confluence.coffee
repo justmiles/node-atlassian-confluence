@@ -1,14 +1,18 @@
-http = require  'https'
-async = require  'async'
-Page = require './lib/Page'
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
+https   = require  'https'
+http    = require  'http'
+async   = require  'async'
+Page    = require './lib/Page'
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] or= '0'
 
 class Confluence
-  constructor: () ->
-    @username = process.env.CONFLUENCE_USERNAME or process.env.ATLASSIAN_USERNAME or ''
-    @password = process.env.CONFLUENCE_PASSWORD or process.env.ATLASSIAN_PASSWORD or ''
-    @host =  process.env.CONFLUENCE_HOST or process.env.ATLASSIAN_HOST or ''
-    @context = process.env.CONFLUENCE_CONTEXT or ''
+  constructor: (options = {}) ->
+    @useSSL   = options.useSSL or true
+
+    @username = options.username or process.env.CONFLUENCE_USERNAME or process.env.ATLASSIAN_USERNAME
+    @password = options.username or process.env.CONFLUENCE_PASSWORD or process.env.ATLASSIAN_PASSWORD
+    @host     = options.host     or process.env.CONFLUENCE_HOST     or process.env.ATLASSIAN_HOST
+    @port     = options.port     or process.env.CONFLUENCE_PORT     or process.env.ATLASSIAN_PORT or (if @useSSL then 443 else 80)
+    @context  = options.context  or process.env.CONFLUENCE_CONTEXT  or ''
 
   page: (page = {}) ->
     return new Page(page)
@@ -111,6 +115,7 @@ class Confluence
 
     options =
       host: @host
+      port: @port
       path: "#{@context}/rest/api#{api}#{params}"
       method: method
       auth: "#{@username}:#{@password}"
@@ -118,6 +123,7 @@ class Confluence
         'Content-Type': 'application/json'
         'Content-Length': payloadString.length
 
+    http = (if @useSSL then https else http)
     req = http.request options, (res) ->
       res.setEncoding 'utf8'
       response = ''
@@ -127,12 +133,12 @@ class Confluence
 
       res.on 'end', ->
         if res.statusCode != 200
-          return callback "Request failed with status code #{res.statusCode}. --  #{options.method} https://#{options.host}#{options.path}", response
+          return callback "Request failed with status code #{res.statusCode}. --  #{options.method} #{options.host}#{options.path}", response
         else
           try
             jsonResponse = JSON.parse(response)
           catch e
-            return callback "Could not parse as JSON response. #{e}. --  #{options.method} https://#{options.host}#{options.path}"
+            return callback "Could not parse as JSON response. #{e}. --  #{options.method} #{options.host}:#{options.port}#{options.path}"
           return callback null, jsonResponse
 
     req.on 'error', (e) ->
