@@ -116,7 +116,7 @@ class Confluence
       auth: "#{@username}:#{@password}"
       headers:
         'Content-Type': 'application/json'
-        'Content-Length': payloadString.length
+        'Content-Length': Buffer.byteLength(payloadString)
 
     req = http.request options, (res) ->
       res.setEncoding 'utf8'
