@@ -20,10 +20,12 @@ Example:
 ```javascript
 var confluence = require('atlassian-confluence');
 
+confluence.useSSL = false
 confluence.username = 'your_username';
 confluence.password = 'your_password';
 confluence.host = 'confluence_host.com';
-confluence.context = '/wiki'; // optional 
+confluence.port = 9080; // Defaults to 443 if useSSL is true. Otherwise, defaults to 80
+confluence.context = '/wiki'; // Optional
 
 confluence.simpleSearch('help', { limit : 3 }, function (res) {
     if (res) {
