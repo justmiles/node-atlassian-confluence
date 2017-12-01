@@ -9,7 +9,7 @@ class Confluence
     @useSSL   = options.useSSL or true
 
     @username = options.username or process.env.CONFLUENCE_USERNAME or process.env.ATLASSIAN_USERNAME
-    @password = options.username or process.env.CONFLUENCE_PASSWORD or process.env.ATLASSIAN_PASSWORD
+    @password = options.password or process.env.CONFLUENCE_PASSWORD or process.env.ATLASSIAN_PASSWORD
     @host     = options.host     or process.env.CONFLUENCE_HOST     or process.env.ATLASSIAN_HOST
     @port     = options.port     or process.env.CONFLUENCE_PORT     or process.env.ATLASSIAN_PORT or (if @useSSL then 443 else 80)
     @context  = options.context  or process.env.CONFLUENCE_CONTEXT  or ''
