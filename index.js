@@ -1,2 +1,2 @@
 require('coffee-script/register');
-module.exports = require('./src/Confluence');
+module.exports = require(__dirname + '/src/Confluence');
