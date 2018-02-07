@@ -1,7 +1,10 @@
 https   = require  'https'
 http    = require  'http'
 async   = require  'async'
+omitEmpty = require 'omit-empty'
+
 Page    = require './lib/Page'
+
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] or= '0'
 
 class Confluence
@@ -36,11 +39,13 @@ class Confluence
       return callback err, res if err
       if res.results[0]?
         page.id = res.results[0].id
+        page.title = payload.title || res.results[0].title
         page.version = res.results[0].version
         page.version.number = res.results[0].version.number + 1
-        confluence.updateContent page.id, page, (err, res) ->
+        confluence.updateContent page.id, omitEmpty(page), (err, res) ->
           return callback err, res
       else
+        page = new Page payload
         confluence.createContent null, payload, (err, res) ->
           return callback err, res
 
@@ -105,7 +110,6 @@ class Confluence
 
   #  utils
   XHR:(method, api, params, payload, callback) ->
-
     if params == null
       params = ''
     else

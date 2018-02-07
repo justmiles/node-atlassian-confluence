@@ -1,6 +1,6 @@
 {
   "name": "atlassian-confluence",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "author": {
     "name": "justmiles"
   },
@@ -28,6 +28,7 @@
   ],
   "dependencies": {
     "async": "^1.5.0",
-    "coffee-script": "^1.9.1"
+    "coffee-script": "^1.9.1",
+    "omit-empty": "^0.4.1"
   }
 }
